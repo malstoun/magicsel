@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Carousel extends React.Component {
+class Magicsel extends React.Component {
 	state = {
 		currentTranslateX: 0
 	};
@@ -107,7 +107,7 @@ class Carousel extends React.Component {
 
 		return (
 			<div
-				className="magicosel"
+				className="magicsel"
 				onTouchStart={this.handleStart}
 				onTouchMove={this.handleMove}
 				onTouchEnd={this.handleEnd}
@@ -147,7 +147,7 @@ export class Slide extends React.Component {
 
 		return (
 			<div
-				className="magicosel-slide"
+				className="magicsel-slide"
 				style={{
 					transform: `translateX(${this.props.translateX}px)`,
 					transition: transition ? `transform ${time / 1000}s ${easeFn} 0s` : ''
@@ -160,4 +160,4 @@ export class Slide extends React.Component {
 	}
 }
 
-export default Carousel;
+export default Magicsel;
