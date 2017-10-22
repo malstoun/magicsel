@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Slide from './slide.jsx';
+
 class Magicsel extends React.Component {
 	state = {
 		currentTranslateX: 0
@@ -137,27 +139,4 @@ class Magicsel extends React.Component {
 	}
 }
 
-class Slide extends React.Component {
-	render() {
-		const {
-			transition,
-			time,
-			easeFn
-		} = this.props;
-
-		return (
-			<div
-				className="magicsel-slide"
-				style={{
-					transform: `translateX(${this.props.translateX}px)`,
-					transition: transition ? `transform ${time / 1000}s ${easeFn} 0s` : ''
-				}}
-				onTransitionEnd={this.props.handleEndTransition}
-			>
-				{this.props.children}
-			</div>
-		)
-	}
-}
-
-export default Magicsel;
+export default Magicsel
