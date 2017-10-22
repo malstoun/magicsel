@@ -137,7 +137,7 @@ class Magicsel extends React.Component {
 	}
 }
 
-export class Slide extends React.Component {
+class Slide extends React.Component {
 	render() {
 		const {
 			transition,
