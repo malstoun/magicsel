@@ -20,11 +20,11 @@ class Magicsel extends React.Component {
 		this.currentSlide = 0;
 	}
 
-	handleStart(e) {
+	handleStart({ touches: [t] }) {
 		this.setState({
 			translateX: this.state.currentTranslateX,
-			position: e.touches[0].screenX,
-			startX: e.touches[0].screenX
+			position: t.screenX,
+			startX: t.screenX
 		})
 	}
 
