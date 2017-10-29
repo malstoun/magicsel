@@ -13,6 +13,11 @@ class Magicsel extends React.Component {
 		this.handleStart = this.handleStart.bind(this);
 		this.handleMove = this.handleMove.bind(this);
 		this.handleEnd = this.handleEnd.bind(this);
+
+		this.handleMouseDown = this.handleMouseDown.bind(this);
+		this.handleMouseMove = this.handleMouseMove.bind(this);
+		this.handleMouseUp = this.handleMouseUp.bind(this);
+
 		this.timeoutFunction = this.timeoutFunction.bind(this);
 		this.enableTransition = this.enableTransition.bind(this);
 		this.disableTransition = this.disableTransition.bind(this);
@@ -54,6 +59,57 @@ class Magicsel extends React.Component {
 		const min = Math.min(t.screenX, this.state.startX);
 
 		const direction = t.screenX - this.state.startX > 0 ? -1 : 1;
+
+		const width = this.component.getBoundingClientRect().width;
+
+		if (max - min > 100 && this.currentSlide + direction < this.count) {
+			this.currentSlide += direction;
+			this.animate(this.currentSlide * -width * direction);
+		} else {
+			this.animate(this.state.currentTranslateX);
+		}
+	}
+
+	handleMouseDown(e) {
+		e.preventDefault();
+		this.setState({
+			translateX: this.state.currentTranslateX,
+			position: e.screenX,
+			startX: e.screenX,
+			mousePressed: true
+		})
+	}
+
+	handleMouseMove({ screenX }) {
+		if (this.state.mousePressed) {
+			this.setState((state) => {
+				return {
+					translateX: state.translateX + (screenX - state.position),
+					position: screenX
+				}
+			})
+		}
+	}
+
+	handleMouseUp({ screenX }) {
+		this.setState({
+			mousePressed: false
+		});
+
+		if (this.state.translateX > 0) {
+			this.animate(0);
+
+			return
+		}
+
+		if (this.state.startX === screenX) {
+			return
+		}
+
+		const max = Math.max(screenX, this.state.startX);
+		const min = Math.min(screenX, this.state.startX);
+
+		const direction = screenX - this.state.startX > 0 ? -1 : 1;
 
 		const width = this.component.getBoundingClientRect().width;
 
@@ -113,6 +169,9 @@ class Magicsel extends React.Component {
 				onTouchStart={this.handleStart}
 				onTouchMove={this.handleMove}
 				onTouchEnd={this.handleEnd}
+				onMouseDown={this.handleMouseDown}
+				onMouseMove={this.handleMouseMove}
+				onMouseUp={this.handleMouseUp}
 				ref={(component) => { this.component = component }}
 				style={{
 					display: 'flex',
