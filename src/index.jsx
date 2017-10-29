@@ -1,12 +1,8 @@
 import React from 'react';
 
-import Slide from './slide.jsx';
+import Slide from './slide';
 
 class Magicsel extends React.Component {
-	state = {
-		currentTranslateX: 0
-	};
-
 	constructor(props) {
 		super(props);
 
@@ -25,34 +21,34 @@ class Magicsel extends React.Component {
 
 		this.count = React.Children.count(props.children);
 		this.currentSlide = 0;
+
+		this.state = {
+			currentTranslateX: 0,
+		};
 	}
 
 	handleStart({ touches: [t] }) {
 		this.setState({
 			translateX: this.state.currentTranslateX,
-			position: t.screenX,
-			startX: t.screenX
-		})
+			startX: t.screenX,
+		});
 	}
 
 	handleMove({ touches: [t] }) {
-		this.setState((state) => {
-			return {
-				translateX: state.translateX + (t.screenX - state.position),
-				position: t.screenX
-			}
-		})
+		this.setState(state => ({
+			ranslateX: state.translateX + (t.screenX - state.position),
+		}));
 	}
 
 	handleEnd({ changedTouches: [t] }) {
 		if (this.state.translateX > 0) {
 			this.animate(0);
 
-			return
+			return;
 		}
 
 		if (this.state.startX === t.screenX) {
-			return
+			return;
 		}
 
 		const max = Math.max(t.screenX, this.state.startX);
@@ -60,7 +56,9 @@ class Magicsel extends React.Component {
 
 		const direction = t.screenX - this.state.startX > 0 ? -1 : 1;
 
-		const width = this.component.getBoundingClientRect().width;
+		const {
+			width,
+		} = this.component.getBoundingClientRect();
 
 		if (max - min > 100 && this.currentSlide + direction < this.count) {
 			this.currentSlide += direction;
@@ -74,36 +72,33 @@ class Magicsel extends React.Component {
 		e.preventDefault();
 		this.setState({
 			translateX: this.state.currentTranslateX,
-			position: e.screenX,
 			startX: e.screenX,
-			mousePressed: true
-		})
+			mousePressed: true,
+		});
 	}
 
 	handleMouseMove({ screenX }) {
 		if (this.state.mousePressed) {
-			this.setState((state) => {
-				return {
-					translateX: state.translateX + (screenX - state.position),
-					position: screenX
-				}
-			})
+			this.setState(state => ({
+				translateX: state.translateX + (screenX - state.position),
+				position: screenX,
+			}));
 		}
 	}
 
 	handleMouseUp({ screenX }) {
 		this.setState({
-			mousePressed: false
+			mousePressed: false,
 		});
 
 		if (this.state.translateX > 0) {
 			this.animate(0);
 
-			return
+			return;
 		}
 
 		if (this.state.startX === screenX) {
-			return
+			return;
 		}
 
 		const max = Math.max(screenX, this.state.startX);
@@ -111,7 +106,9 @@ class Magicsel extends React.Component {
 
 		const direction = screenX - this.state.startX > 0 ? -1 : 1;
 
-		const width = this.component.getBoundingClientRect().width;
+		const {
+			width,
+		} = this.component.getBoundingClientRect();
 
 		if (max - min > 100 && this.currentSlide + direction < this.count) {
 			this.currentSlide += direction;
@@ -123,9 +120,9 @@ class Magicsel extends React.Component {
 
 	timeoutFunction(to) {
 		const p = new Promise((r) => {
-			this.setState((state) => ({
+			this.setState(() => ({
 				translateX: to,
-				currentTranslateX: to
+				currentTranslateX: to,
 			}), r);
 		});
 
@@ -135,8 +132,8 @@ class Magicsel extends React.Component {
 	enableTransition() {
 		const p = new Promise((r) => {
 			this.setState({
-				transition: true
-			}, r)
+				transition: true,
+			}, r);
 		});
 
 		return p;
@@ -144,13 +141,13 @@ class Magicsel extends React.Component {
 
 	disableTransition() {
 		this.setState({
-			transition: false
-		})
+			transition: false,
+		});
 	}
 
 	animate(to) {
 		this.enableTransition()
-			.then(() => this.timeoutFunction(to))
+			.then(() => this.timeoutFunction(to));
 	}
 
 	handleEndTransition() {
@@ -160,7 +157,7 @@ class Magicsel extends React.Component {
 	render() {
 		const {
 			translateX,
-			transition
+			transition,
 		} = this.state;
 
 		return (
@@ -172,30 +169,29 @@ class Magicsel extends React.Component {
 				onMouseDown={this.handleMouseDown}
 				onMouseMove={this.handleMouseMove}
 				onMouseUp={this.handleMouseUp}
-				ref={(component) => { this.component = component }}
+				ref={(component) => { this.component = component; }}
 				style={{
 					display: 'flex',
-					overflow: 'hidden'
+					overflow: 'hidden',
 				}}
+				role="Banner"
 			>
 				{
-					React.Children.map(this.props.children, (child) => {
-						return (
-							<Slide
-								translateX={translateX}
-								transition={transition}
-								handleEndTransition={this.handleEndTransition}
-								time={this.props.time}
-								easeFn={this.props.easeFn}
-							>
-								{child}
-							</Slide>
-						)
-					})
+					React.Children.map(this.props.children, child => (
+						<Slide
+							translateX={translateX}
+							transition={transition}
+							handleEndTransition={this.handleEndTransition}
+							time={this.props.time}
+							easeFn={this.props.easeFn}
+						>
+							{child}
+						</Slide>
+					))
 				}
 			</div>
-		)
+		);
 	}
 }
 
-export default Magicsel
+export default Magicsel;
