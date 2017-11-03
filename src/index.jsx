@@ -37,7 +37,7 @@ class Magicsel extends React.Component {
 
 	handleMove({ touches: [t] }) {
 		this.setState(state => ({
-			ranslateX: state.translateX + (t.screenX - state.position),
+			translateX: state.translateX + (t.screenX - state.position),
 		}));
 	}
 
