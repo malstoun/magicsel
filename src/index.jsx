@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Slide from './slide';
 
@@ -193,5 +194,18 @@ class Magicsel extends React.Component {
 		);
 	}
 }
+
+Magicsel.propTypes = {
+	children: PropTypes.oneOfType([
+		PropTypes.element,
+		PropTypes.arrayOf(PropTypes.element),
+	]),
+	time: PropTypes.number.isRequired,
+	easeFn: PropTypes.string.isRequired,
+};
+
+Magicsel.defaultProps = {
+	children: [],
+};
 
 export default Magicsel;
