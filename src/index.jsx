@@ -120,24 +120,20 @@ class Magicsel extends React.Component {
 	}
 
 	timeoutFunction(to) {
-		const p = new Promise((r) => {
+		return new Promise((r) => {
 			this.setState(() => ({
 				translateX: to,
 				currentTranslateX: to,
 			}), r);
 		});
-
-		return p;
 	}
 
 	enableTransition() {
-		const p = new Promise((r) => {
+		return new Promise((r) => {
 			this.setState({
 				transition: true,
 			}, r);
 		});
-
-		return p;
 	}
 
 	disableTransition() {
