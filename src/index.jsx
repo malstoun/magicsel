@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Slide from './slide';
+import Slide from './slide.jsx';
 
 class Magicsel extends React.Component {
 	constructor(props) {
@@ -20,11 +20,13 @@ class Magicsel extends React.Component {
 		this.disableTransition = this.disableTransition.bind(this);
 		this.handleEndTransition = this.handleEndTransition.bind(this);
 
+		this.handleMoveEnd = this.handleMoveEnd.bind(this);
+
 		this.count = React.Children.count(props.children);
-		this.currentSlide = 0;
 
 		this.state = {
 			currentTranslateX: 0,
+			currentSlide: 0,
 		};
 	}
 
@@ -48,25 +50,7 @@ class Magicsel extends React.Component {
 			return;
 		}
 
-		if (this.state.startX === t.screenX) {
-			return;
-		}
-
-		const max = Math.max(t.screenX, this.state.startX);
-		const min = Math.min(t.screenX, this.state.startX);
-
-		const direction = t.screenX - this.state.startX > 0 ? -1 : 1;
-
-		const {
-			width,
-		} = this.component.getBoundingClientRect();
-
-		if (max - min > 100 && this.currentSlide + direction < this.count) {
-			this.currentSlide += direction;
-			this.animate(this.currentSlide * -width * direction);
-		} else {
-			this.animate(this.state.currentTranslateX);
-		}
+		this.handleMoveEnd(t.screenX);
 	}
 
 	handleMouseDown(e) {
@@ -98,6 +82,10 @@ class Magicsel extends React.Component {
 			return;
 		}
 
+		this.handleMoveEnd(screenX);
+	}
+
+	handleMoveEnd(screenX) {
 		if (this.state.startX === screenX) {
 			return;
 		}
@@ -111,11 +99,16 @@ class Magicsel extends React.Component {
 			width,
 		} = this.component.getBoundingClientRect();
 
-		if (max - min > 100 && this.currentSlide + direction < this.count) {
-			this.currentSlide += direction;
-			this.animate(this.currentSlide * -width * direction);
+		if (max - min > (width / 3) && this.state.currentSlide + direction < this.count) {
+			this.animate(
+				this.state.currentSlide * -width * direction,
+				this.state.currentSlide + direction,
+			);
 		} else {
-			this.animate(this.state.currentTranslateX);
+			this.animate(
+				this.state.currentTranslateX,
+				this.state.currentSlide,
+			);
 		}
 	}
 
@@ -124,6 +117,8 @@ class Magicsel extends React.Component {
 			this.setState(() => ({
 				translateX: to,
 				currentTranslateX: to,
+				startX: 0,
+				position: 0,
 			}), r);
 		});
 	}
@@ -142,9 +137,14 @@ class Magicsel extends React.Component {
 		});
 	}
 
-	animate(to) {
+	animate(to, nextSlide) {
 		this.enableTransition()
-			.then(() => this.timeoutFunction(to));
+			.then(() => this.timeoutFunction(to))
+			.then(() => {
+				this.setState({
+					currentSlide: nextSlide,
+				});
+			});
 	}
 
 	handleEndTransition() {

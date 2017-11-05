@@ -6,13 +6,13 @@ export default {
 	output: {
 		file: 'dist/index.js',
 		format: 'cjs',
-		exports: 'default'
+		exports: 'default',
 	},
 	plugins: [
 		// resolve(),
 		commonjs(),
 		babel({
-			exclude: 'node_modules/**'
-		})
-	]
+			exclude: 'node_modules/**',
+		}),
+	],
 };
