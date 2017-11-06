@@ -33,6 +33,7 @@ class Magicsel extends React.Component {
 	handleStart({ touches: [t] }) {
 		this.setState({
 			translateX: this.state.currentTranslateX,
+			position: t.screenX,
 			startX: t.screenX,
 		});
 	}
@@ -40,6 +41,7 @@ class Magicsel extends React.Component {
 	handleMove({ touches: [t] }) {
 		this.setState(state => ({
 			translateX: state.translateX + (t.screenX - state.position),
+			position: t.screenX,
 		}));
 	}
 
@@ -57,6 +59,7 @@ class Magicsel extends React.Component {
 		e.preventDefault();
 		this.setState({
 			translateX: this.state.currentTranslateX,
+			position: e.screenX,
 			startX: e.screenX,
 			mousePressed: true,
 		});
@@ -99,9 +102,9 @@ class Magicsel extends React.Component {
 			width,
 		} = this.component.getBoundingClientRect();
 
-		if (max - min > (width / 3) && this.state.currentSlide + direction < this.count) {
+		if (max - min > (width / 4) && this.state.currentSlide + direction < this.count) {
 			this.animate(
-				this.state.currentSlide * -width * direction,
+				-(this.state.currentSlide * width) + (-width * direction),
 				this.state.currentSlide + direction,
 			);
 		} else {
