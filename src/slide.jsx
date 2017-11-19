@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export default ({
+const Slide = ({
 	transition,
 	translateX,
 	time,
@@ -19,3 +20,18 @@ export default ({
 		{children}
 	</div>
 );
+
+Slide.propTypes = {
+	transition: PropTypes.bool.isRequired,
+	translateX: PropTypes.number.isRequired,
+	time: PropTypes.number.isRequired,
+	easeFn: PropTypes.string.isRequired,
+	children: PropTypes.arrayOf(PropTypes.element),
+	handleEndTransition: PropTypes.func.isRequired,
+};
+
+Slide.defaultProps = {
+	children: [],
+};
+
+export default Slide;

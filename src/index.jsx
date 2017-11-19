@@ -33,7 +33,7 @@ class Magicsel extends React.Component {
 	handleStart({ touches: [t] }) {
 		this.setState({
 			translateX: this.state.currentTranslateX,
-			position: t.screenX,
+			position: t.screenX, // eslint-disable-line
 			startX: t.screenX,
 		});
 	}
@@ -59,7 +59,7 @@ class Magicsel extends React.Component {
 		e.preventDefault();
 		this.setState({
 			translateX: this.state.currentTranslateX,
-			position: e.screenX,
+			position: e.screenX, // eslint-disable-line
 			startX: e.screenX,
 			mousePressed: true,
 		});
