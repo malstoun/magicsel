@@ -3,6 +3,18 @@ import PropTypes from 'prop-types';
 
 import Slide from './slide.jsx';
 
+function shouldMove(startX, endX, startY, endY) {
+	const maxLegX = Math.max(startX, endX);
+	const minLegX = maxLegX === startX ? endX : startX;
+
+	const maxLegY = Math.max(startY, endY);
+	const minLegY = maxLegY === startY ? endY : startY;
+
+	const tg = (maxLegY - minLegY) / (maxLegX - minLegX);
+
+	return tg >= 0 && tg < 0.8;
+}
+
 class Magicsel extends React.Component {
 	constructor(props) {
 		super(props);
@@ -37,9 +49,42 @@ class Magicsel extends React.Component {
 			position: t.screenX, // eslint-disable-line
 			startX: t.screenX,
 		});
+
+		this.initEvent = true;
+		this.startY = t.screenY;
 	}
 
-	handleMove({ touches: [t] }) {
+	handleMove(e) {
+		const {
+			touches: [t],
+		} = e;
+
+		if (!this.await && this.initEvent) {
+			this.await = true;
+			this.initEvent = false;
+			setTimeout(() => {
+				this.await = false;
+			}, 80);
+			return;
+		}
+
+		if (this.await) {
+			e.preventDefault();
+			return;
+		}
+
+		if (this.preventMoving) {
+			return;
+		}
+
+		if (!this.moveChecked && !shouldMove(this.state.position, t.screenX, this.startY, t.screenY)) {
+			this.moveChecked = true;
+			this.preventMoving = true;
+			return;
+		}
+
+		this.moveChecked = true;
+
 		this.setState(state => ({
 			translateX: state.translateX + (t.screenX - state.position),
 			position: t.screenX,
@@ -47,6 +92,18 @@ class Magicsel extends React.Component {
 	}
 
 	handleEnd({ changedTouches: [t] }) {
+		this.moveChecked = false;
+
+		if (this.preventMoving) {
+			this.preventMoving = false;
+			this.setState(state => ({
+				translateX: state.currentTranslateX,
+				position: 0, // eslint-disable-line
+				startX: 0,
+			}));
+			return;
+		}
+
 		if (this.state.translateX > 0) {
 			this.animate(0, this.state.currentSlide);
 
