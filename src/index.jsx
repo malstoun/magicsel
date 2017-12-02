@@ -25,6 +25,7 @@ class Magicsel extends React.Component {
 		this.count = React.Children.count(props.children);
 
 		this.state = {
+			transition: false,
 			currentTranslateX: 0,
 			currentSlide: 0,
 		};
