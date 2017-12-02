@@ -47,7 +47,7 @@ class Magicsel extends React.Component {
 
 	handleEnd({ changedTouches: [t] }) {
 		if (this.state.translateX > 0) {
-			this.animate(0);
+			this.animate(0, this.state.currentSlide);
 
 			return;
 		}
@@ -80,7 +80,7 @@ class Magicsel extends React.Component {
 		});
 
 		if (this.state.translateX > 0) {
-			this.animate(0);
+			this.animate(0, this.state.currentSlide);
 
 			return;
 		}
